@@ -41,7 +41,7 @@ def iniciar_programa(ruta:str):
     while seguir == True:
         retorno = menu_principal()
 
-        while retorno < 0 or retorno > 8:
+        while retorno < 0 or retorno > 9:
             imprimir_dato("Opcion incorrecta. REINGRESE UNA OPCION: ")
             retorno = menu_principal()
             
@@ -89,7 +89,10 @@ def iniciar_programa(ruta:str):
                 else:
                     imprimir_dato(msj_error)
             case 8:
+                mas_poder(lista_retorno)
+            case 9:
                 #  Salir del programa.
                  seguir = False
+                
 
 iniciar_programa(ruta_dos)  

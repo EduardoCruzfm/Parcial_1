@@ -7,7 +7,21 @@ import json
 from os import system
 system("cls")
 
-ruta_dos = "D:\\programacion\\UTN\\parcial_01\\DBZ - DBZ (1).csv"
+ruta_dos = "D:\\programacion\\UTN\\parcial_01\\Parcial_1\\DBZ - DBZ (1).csv"
+
+
+'''
+Requerimiento extra
+
+Agregar una opción que permita otorgarle un 50% más de poder de pelea y un 70% más de poder de ataque a los Saiyan, y agregaran a sus habilidades la “transformación nivel dios”.
+Guardar en un archivo CSV los personajes que hayan recibido esta actualización.
+
+
+
+'''
+
+
+
 
 # MENU PRINCIPAN
 def mostrar_menu()->None:
@@ -18,7 +32,7 @@ def mostrar_menu()->None:
     menu = ["\n1.Traer datos desde archivo", "2.Listar cantidad por raza",
             "3.Listar personajes por raza",
             "4.Listar personajes por habilidad", "5.Jugar batalla:",
-            "6.Guardar Json:", "7.Leer Json", "8.Salir\n"]
+            "6.Guardar Json:", "7.Leer Json","8.Agregar mas poder" ,"9.Salir\n"]
 
     for opcion in menu:
         print(opcion)
@@ -390,3 +404,35 @@ def leer_json(ruta:str)->None:
 
     imprimir_dato(data)
 
+#8 .MAS PODER
+def mas_poder(lista:list)->None:
+    '''
+        Brief: Recibe como parámetro una lista para itearar y 
+        moficarla dos valores
+        Parameters:
+            Lista -> lista sobre la cual voy a trabajar
+    ''' 
+
+    nueva_lista = []
+    
+    for i in range(len(lista)):
+        pelea = lista[i]["Poder de pelea"]
+        ataque = lista[i]["Poder de ataque"]
+
+        porsentaje_pelea = 50 * pelea / 100
+        pelea_final = ataque + porsentaje_pelea
+
+        porsentaje_ataque = 70 * ataque / 100
+        ataque_final = ataque + porsentaje_ataque
+
+        lista[i]["Poder de pelea"] = pelea_final
+        lista[i]["Poder de ataque"] = ataque_final
+
+        nueva_lista.append(lista[i])
+
+    with open(f"Aumento_poder_ataque.txt",'w') as archivo:
+        for i in range(len(nueva_lista)):
+            archivo.write(f"{nueva_lista[i]}\n")
+
+    imprimir_dato(nueva_lista)
+mas_poder(parser_csv(ruta_dos))
