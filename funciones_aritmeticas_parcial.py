@@ -20,9 +20,6 @@ Guardar en un archivo CSV los personajes que hayan recibido esta actualización.
 
 '''
 
-
-
-
 # MENU PRINCIPAN
 def mostrar_menu()->None:
     """
@@ -190,7 +187,7 @@ def listar_por_habilidad(lista:list)->None:
 
         set_habilidades = listar_por_dato(lista,"Habilidades")
 
-        imprimir_dato("TIPO DE HABILIDADES")
+        imprimir_dato("TIPO DE HABILIDADES ESCOJA UNO:")
         imprimir_dato(f"\n{set_habilidades}\n")
 
         # -------------------
@@ -246,7 +243,7 @@ def jugar_batalla(lista: list)->None:
         nombre_personajes.append(nombres)
         contador += 1
 
-    imprimir_dato("NOMBRES DE PERSONAJES:  ")
+    imprimir_dato("NOMBRES DE PERSONAJES ESCOJA UNO:  ")
     imprimir_dato(f"\n{nombre_personajes}\n")
     #  print(contador)
 
@@ -308,14 +305,12 @@ def jugar_batalla(lista: list)->None:
     list_resultado_pelea.append(f"Fecha de la pelea -> {date}")
     list_resultado_pelea.append(f"GANADOR -> {msj_ganador}")
     list_resultado_pelea.append(f"PERDEDOR -> {msj_perdedor}")
-
-    # ADMINISTRADOR DE CONTEXTO EN MODO ESCRITURA
-    # ESCRIBO POR ITERACION EL CONTENIDO DE LA list_resultado_pelea []
+    
+    # NOMBRE DEL ARCHIVO
     texto_txt = f"pelea_{nombre_jugador}-{nombre_maquina}"
      
-    with open(f"{texto_txt}.txt",'w') as archivo:
-        for i in range(len(list_resultado_pelea)):
-            archivo.write(f"{list_resultado_pelea[i]}\n")
+    # CREA EL ARCHIVO CSV
+    administrador_de_contexto(texto_txt,"txt",list_resultado_pelea)
 
     imprimir_dato(list_resultado_pelea)
 
@@ -384,8 +379,7 @@ def guarda_json(lista:list)->list:
             datos_terminados[nombre_archivo].append("NO HUVO COINDIDENCIAS")
 
     # ADMINISTRADOR DE CONTEXTO EN MODO ESCRITURA
-    with open(f"{nombre_archivo}.json","w") as archivo:
-        json.dump(datos_terminados,archivo,indent = 4,ensure_ascii = False)
+    administrador_de_contexto_json(nombre_archivo,"w",datos_terminados)
 
     return nombre_archivo
 
@@ -393,46 +387,80 @@ def guarda_json(lista:list)->list:
 def leer_json(ruta:str)->None:
     '''
         Brief: Recibe como parámetro una ruta(path)
-               para abrir el archivo y mostrarlo
+               para abrir el archivo y mostrarlo mediante 
+               administrador_de_contexto_json()
 
         Parameters:
             ruta -> Ruta del archivo para acceder
     ''' 
-    # for i in range(len(lista)):
-    with open(f"{ruta}.json","r") as mi_archivo:
-        data = json.load(mi_archivo)
 
-    imprimir_dato(data)
+    dato = administrador_de_contexto_json(ruta,"r")
+    imprimir_dato(dato)
+
 
 #8 .MAS PODER
 def mas_poder(lista:list)->None:
     '''
         Brief: Recibe como parámetro una lista para itearar y 
-        moficarla dos valores
+        moficarla tres valores
         Parameters:
             Lista -> lista sobre la cual voy a trabajar
     ''' 
 
-    nueva_lista = []
+    lista_poderes_aumentados = []
     
     for i in range(len(lista)):
+        # VALORE A MODIFICAR
         pelea = lista[i]["Poder de pelea"]
         ataque = lista[i]["Poder de ataque"]
+        lista_habilidades = lista[i]["Habilidades"]
 
-        porsentaje_pelea = 50 * pelea / 100
-        pelea_final = ataque + porsentaje_pelea
+        # PARA HACER UNA VALIDACION CON TIPO DE RAZA Y ITERARLA
+        lista_razas = lista[i]["Raza"]
 
-        porsentaje_ataque = 70 * ataque / 100
+        # OPERACIONES
+        porsentaje_pelea = sacar_porcentaje(50,pelea)
+        pelea_final = pelea + porsentaje_pelea
+
+        porsentaje_ataque = sacar_porcentaje(70,ataque)
         ataque_final = ataque + porsentaje_ataque
 
+        # ASIGNACION DEL NUEVO VALOR 
         lista[i]["Poder de pelea"] = pelea_final
         lista[i]["Poder de ataque"] = ataque_final
 
-        nueva_lista.append(lista[i])
+        # SI EXISTE AGREGO NUEVA HABILIDAD Y LO AGREGO A OTRA LISTA
+        if "Saiyan" in lista_razas:   
+            lista_habilidades.append("Transformación Nivel Dios")
+            lista_poderes_aumentados.append(lista[i])
 
-    with open(f"Aumento_poder_ataque.txt",'w') as archivo:
-        for i in range(len(nueva_lista)):
-            archivo.write(f"{nueva_lista[i]}\n")
+    lista_para_converetir_csv = []
+    # CONVIERTE A FORMATO CSV
+    for i in range(len(lista_poderes_aumentados)):
+        cadena = ""
+        cadena += agregar_coma(str(lista_poderes_aumentados[i]["Id"]))
+        cadena += agregar_coma(lista_poderes_aumentados[i]["Nombre"])   
+        # lista_razas =  lista[i]["Raza"]   
 
-    imprimir_dato(nueva_lista)
-mas_poder(parser_csv(ruta_dos))
+        for raza in lista_razas:
+            cadena += agregar_coma(raza)
+        
+        cadena += agregar_coma(str(lista_poderes_aumentados[i]["Poder de pelea"]))
+        cadena += agregar_coma(str(lista_poderes_aumentados[i]["Poder de ataque"]))
+
+        # DEVUELVE UNA CADENA CON EL SIMBOLO -> | 
+        caneda_habiliades = "|".join(lista_poderes_aumentados[i]["Habilidades"])
+        cadena += caneda_habiliades
+        # AGREGO LA CADENA FORMATEADA
+        lista_para_converetir_csv.append(cadena)
+
+    # CREA EL ARCHIVO CSV
+    administrador_de_contexto("Aumento_poder_ataque","csv",lista_para_converetir_csv)
+
+    # IMPRIMO POR CADA LINEA
+    for linea in lista_para_converetir_csv:
+        imprimir_dato(linea)
+    
+# mas_poder(parser_csv(ruta_dos))
+
+

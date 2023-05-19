@@ -79,17 +79,22 @@ def iniciar_programa(ruta:str):
             case 6:
                 # Guardar Json:
                 if ban == False:
-                    prueba = guarda_json(lista_retorno)
+                    ruta_json = guarda_json(lista_retorno)
                 else:
                     imprimir_dato(msj_error) 
             case 7:
                 # Leer Json:
                 if ban == False:
-                    leer_json(prueba)
+                    leer_json(ruta_json)
                 else:
                     imprimir_dato(msj_error)
             case 8:
-                mas_poder(lista_retorno)
+                # Mas poder
+                if ban == False:
+                    mas_poder(lista_retorno)
+                else:
+                    imprimir_dato(msj_error)
+            
             case 9:
                 #  Salir del programa.
                  seguir = False
