@@ -150,7 +150,9 @@ def entrada_de_input(lista:list)->str:
 
     # INGRESO DE DATOS
     raza_ingre = input("Ingrese una RAZA:  ")
+    raza_ingre = raza_ingre.strip()
     habilidad_ingre = input("Ingrese una HABILIDAD:  ")
+    habilidad_ingre = habilidad_ingre.strip()
     # VALIDO QUE NO SEA UN ESPACIO VACIO
     while raza_ingre not in set_razas or habilidad_ingre not in set_habilidades: 
         print("ERROR ingrese nuevamente")
